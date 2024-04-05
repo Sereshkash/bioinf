@@ -43,7 +43,7 @@ def creating_fasta_set(name_S, N, len_subsequence, name_fasta_set = 'example.fa'
     file.close()
 
 def creating_fasta_new_nhmmer_set(name_seq, name_out_posision, N = 20, name_fasta_set = 'example.fa'):
-    set_of_subseq = creating_new_set_from_out_nhmmer(name_seq, name_out_posision, N = 20)
+    set_of_subseq = creating_new_set_from_out_nhmmer(name_seq, name_out_posision, N)
     string_set_of_subset = ''
     for i in range(len(set_of_subseq)):
         string_set_of_subset +=  '>i' + str(i) + ' iteration;\n' +str(set_of_subseq[i]) + '\n'
@@ -97,7 +97,9 @@ def creating_new_set_from_out_nhmmer(name_seq, name_out_posision, N = 20):
         new_set[i] = s[begin - 1:end]
     return new_set
 
-creating_new_set_from_out_nhmmer('1ex.fa','www.fa')
+
+
+#creating_new_set_from_out_nhmmer('1ex.fa','www.fa')
 # set = string_split('CACAGGACTAGGATCGAAAGGCAG', 3, 4)
 # # name = "example.fa"
 # # creating_fasta_set(set, name)
@@ -116,7 +118,7 @@ creating_new_set_from_out_nhmmer('1ex.fa','www.fa')
 
 
 
-nhmmer_on_stock_msa()
+#nhmmer_on_stock_msa()
 
 #creating_fasta_set(['ATTGC', 'AATTGC', 'ATGC'])
 
