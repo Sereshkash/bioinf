@@ -1,0 +1,135 @@
+# nhmmer :: search a DNA model, alignment, or sequence against a DNA database
+# HMMER 3.3 (Nov 2019); http://hmmer.org/
+# Copyright (C) 2019 Howard Hughes Medical Institute.
+# Freely distributed under the BSD open source license.
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# query file:                      it16/example_subseq_msa.sto
+# target sequence database:        example.fa
+# output directed to file:         it16/name_result_nhmmer_info_0.fa
+# alignment scores output:         it16/name_result_nhmmer_posision.fa
+# show alignments in output:       no
+# max ASCII text line length:      unlimited
+# Use score matrix for 1-seq MSAs:  on
+# sequence inclusion threshold:    E-value <= 0.1
+# input query is asserted as:      DNA
+# number of worker threads:        2
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+Query:       example_subseq_msa  [M=415]
+Scores for complete hits:
+    E-value  score  bias  Sequence   start     end  Description
+    ------- ------ -----  --------   -----   -----  -----------
+    2.5e-14   53.8   2.4  i1       7791234 7791632 seq;
+    3.9e-13   49.9   1.1  i1       5539877 5540192 seq;
+    2.7e-12   47.2   0.1  i1       2098077 2098452 seq;
+    5.5e-12   46.2   1.4  i1        561501  561897 seq;
+    6.2e-12   46.0   0.3  i1        952118  952511 seq;
+      8e-12   45.7   3.0  i1       3264119 3264477 seq;
+    1.2e-11   45.1   0.2  i1       1346176 1346572 seq;
+      4e-11   43.4   0.8  i1        733006  733383 seq;
+    1.5e-10   41.6   0.6  i1       3803525 3803904 seq;
+    6.2e-10   39.6   2.6  i1       8446073 8446471 seq;
+    8.3e-10   39.1   1.7  i1       7919241 7919614 seq;
+      9e-10   39.0   2.6  i1        924879  925273 seq;
+    1.9e-09   38.0   0.2  i1       3247349 3247744 seq;
+    2.4e-08   34.4   0.4  i1       5427713 5428115 seq;
+    2.8e-06   27.8   0.0  i1       1334427 1334795 seq;
+    3.5e-05   24.2   0.1  i1       8979474 8979813 seq;
+
+
+Annotation for each hit :
+>> i1  seq;
+    score  bias    Evalue   hmmfrom    hmm to     alifrom    ali to      envfrom    env to       sq len      acc
+   ------ ----- ---------   -------   -------    --------- ---------    --------- ---------    ---------    ----
+ !   53.8   2.4   2.5e-14        12       407 ..   7791234   7791632 ..   7791225   7791638 ..  10000000    0.93
+
+>> i1  seq;
+    score  bias    Evalue   hmmfrom    hmm to     alifrom    ali to      envfrom    env to       sq len      acc
+   ------ ----- ---------   -------   -------    --------- ---------    --------- ---------    ---------    ----
+ !   49.9   1.1   3.9e-13        50       381 ..   5539877   5540192 ..   5539854   5540213 ..  10000000    0.92
+
+>> i1  seq;
+    score  bias    Evalue   hmmfrom    hmm to     alifrom    ali to      envfrom    env to       sq len      acc
+   ------ ----- ---------   -------   -------    --------- ---------    --------- ---------    ---------    ----
+ !   47.2   0.1   2.7e-12        14       409 ..   2098077   2098452 ..   2098064   2098458 ..  10000000    0.86
+
+>> i1  seq;
+    score  bias    Evalue   hmmfrom    hmm to     alifrom    ali to      envfrom    env to       sq len      acc
+   ------ ----- ---------   -------   -------    --------- ---------    --------- ---------    ---------    ----
+ !   46.2   1.4   5.5e-12        13       410 ..    561501    561897 ..    561490    561901 ..  10000000    0.87
+
+>> i1  seq;
+    score  bias    Evalue   hmmfrom    hmm to     alifrom    ali to      envfrom    env to       sq len      acc
+   ------ ----- ---------   -------   -------    --------- ---------    --------- ---------    ---------    ----
+ !   46.0   0.3   6.2e-12        13       410 ..    952118    952511 ..    952107    952515 ..  10000000    0.95
+
+>> i1  seq;
+    score  bias    Evalue   hmmfrom    hmm to     alifrom    ali to      envfrom    env to       sq len      acc
+   ------ ----- ---------   -------   -------    --------- ---------    --------- ---------    ---------    ----
+ !   45.7   3.0     8e-12        14       397 ..   3264119   3264477 ..   3264107   3264489 ..  10000000    0.93
+
+>> i1  seq;
+    score  bias    Evalue   hmmfrom    hmm to     alifrom    ali to      envfrom    env to       sq len      acc
+   ------ ----- ---------   -------   -------    --------- ---------    --------- ---------    ---------    ----
+ !   45.1   0.2   1.2e-11         7       397 ..   1346176   1346572 ..   1346170   1346585 ..  10000000    0.93
+
+>> i1  seq;
+    score  bias    Evalue   hmmfrom    hmm to     alifrom    ali to      envfrom    env to       sq len      acc
+   ------ ----- ---------   -------   -------    --------- ---------    --------- ---------    ---------    ----
+ !   43.4   0.8     4e-11         8       402 ..    733006    733383 ..    733000    733391 ..  10000000    0.92
+
+>> i1  seq;
+    score  bias    Evalue   hmmfrom    hmm to     alifrom    ali to      envfrom    env to       sq len      acc
+   ------ ----- ---------   -------   -------    --------- ---------    --------- ---------    ---------    ----
+ !   41.6   0.6   1.5e-10         9       409 ..   3803525   3803904 ..   3803517   3803909 ..  10000000    0.92
+
+>> i1  seq;
+    score  bias    Evalue   hmmfrom    hmm to     alifrom    ali to      envfrom    env to       sq len      acc
+   ------ ----- ---------   -------   -------    --------- ---------    --------- ---------    ---------    ----
+ !   39.6   2.6   6.2e-10        14       411 ..   8446073   8446471 ..   8446062   8446475 ..  10000000    0.89
+
+>> i1  seq;
+    score  bias    Evalue   hmmfrom    hmm to     alifrom    ali to      envfrom    env to       sq len      acc
+   ------ ----- ---------   -------   -------    --------- ---------    --------- ---------    ---------    ----
+ !   39.1   1.7   8.3e-10        67       409 ..   7919241   7919614 ..   7919220   7919618 ..  10000000    0.91
+
+>> i1  seq;
+    score  bias    Evalue   hmmfrom    hmm to     alifrom    ali to      envfrom    env to       sq len      acc
+   ------ ----- ---------   -------   -------    --------- ---------    --------- ---------    ---------    ----
+ !   39.0   2.6     9e-10        13       408 ..    924879    925273 ..    924867    925279 ..  10000000    0.85
+
+>> i1  seq;
+    score  bias    Evalue   hmmfrom    hmm to     alifrom    ali to      envfrom    env to       sq len      acc
+   ------ ----- ---------   -------   -------    --------- ---------    --------- ---------    ---------    ----
+ !   38.0   0.2   1.9e-09         7       401 ..   3247349   3247744 ..   3247343   3247756 ..  10000000    0.91
+
+>> i1  seq;
+    score  bias    Evalue   hmmfrom    hmm to     alifrom    ali to      envfrom    env to       sq len      acc
+   ------ ----- ---------   -------   -------    --------- ---------    --------- ---------    ---------    ----
+ !   34.4   0.4   2.4e-08        31       408 ..   5427713   5428115 ..   5427693   5428120 ..  10000000    0.92
+
+>> i1  seq;
+    score  bias    Evalue   hmmfrom    hmm to     alifrom    ali to      envfrom    env to       sq len      acc
+   ------ ----- ---------   -------   -------    --------- ---------    --------- ---------    ---------    ----
+ !   27.8   0.0   2.8e-06        34       410 ..   1334427   1334795 ..   1334403   1334800 ..  10000000    0.90
+
+>> i1  seq;
+    score  bias    Evalue   hmmfrom    hmm to     alifrom    ali to      envfrom    env to       sq len      acc
+   ------ ----- ---------   -------   -------    --------- ---------    --------- ---------    ---------    ----
+ !   24.2   0.1   3.5e-05        25       381 ..   8979474   8979813 ..   8979458   8979840 ..  10000000    0.84
+
+
+
+Internal pipeline statistics summary:
+-------------------------------------
+Query model(s):                            1  (415 nodes)
+Target sequences:                          1  (20000000 residues searched)
+Residues passing SSV filter:          497648  (0.0249); expected (0.02)
+Residues passing bias filter:         497648  (0.0249); expected (0.02)
+Residues passing Vit filter:           26107  (0.00131); expected (0.003)
+Residues passing Fwd filter:           17221  (0.000861); expected (3e-05)
+Total number of hits:                     16  (0.000304)
+# CPU time: 1.37u 0.02s 00:00:01.39 Elapsed: 00:00:01.45
+# Mc/sec: 5690.80
+//
+[ok]

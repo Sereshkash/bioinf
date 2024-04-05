@@ -1,0 +1,92 @@
+# nhmmer :: search a DNA model, alignment, or sequence against a DNA database
+# HMMER 3.3 (Nov 2019); http://hmmer.org/
+# Copyright (C) 2019 Howard Hughes Medical Institute.
+# Freely distributed under the BSD open source license.
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# query file:                      it19/example_subseq_msa.sto
+# target sequence database:        example.fa
+# output directed to file:         it19/name_result_nhmmer_info.fa
+# alignment scores output:         it19/name_result_nhmmer_posision.fa
+# show alignments in output:       no
+# max ASCII text line length:      unlimited
+# Use score matrix for 1-seq MSAs:  on
+# input query is asserted as:      DNA
+# number of worker threads:        2
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+Query:       example_subseq_msa  [M=201]
+Scores for complete hits:
+    E-value  score  bias  Sequence   start     end  Description
+    ------- ------ -----  --------   -----   -----  -----------
+    3.7e-13   51.5   0.2  i1       7230802 7230963 seq;
+    1.3e-12   49.8   1.1  i1       8505929 8506171 seq;
+    8.5e-12   47.1   0.1  i1       2743392 2743558 seq;
+    1.5e-11   46.3   2.5  i1       7198821 7198997 seq;
+    3.5e-11   45.1   9.0  i1       3378596 3378783 seq;
+    2.6e-10   42.3   1.0  i1       4349224 4349422 seq;
+    6.9e-10   41.0   2.8  i1       9365338 9365545 seq;
+    1.1e-09   40.4   0.4  i1       9924368 9924532 seq;
+    2.5e-09   39.2   0.5  i1       1698397 1698555 seq;
+
+
+Annotation for each hit :
+>> i1  seq;
+    score  bias    Evalue   hmmfrom    hmm to     alifrom    ali to      envfrom    env to       sq len      acc
+   ------ ----- ---------   -------   -------    --------- ---------    --------- ---------    ---------    ----
+ !   51.5   0.2   3.7e-13        27       191 ..   7230802   7230963 ..   7230782   7230983 ..  10000000    0.88
+
+>> i1  seq;
+    score  bias    Evalue   hmmfrom    hmm to     alifrom    ali to      envfrom    env to       sq len      acc
+   ------ ----- ---------   -------   -------    --------- ---------    --------- ---------    ---------    ----
+ !   49.8   1.1   1.3e-12         4       194 ..   8505929   8506171 ..   8505926   8506188 ..  10000000    0.95
+
+>> i1  seq;
+    score  bias    Evalue   hmmfrom    hmm to     alifrom    ali to      envfrom    env to       sq len      acc
+   ------ ----- ---------   -------   -------    --------- ---------    --------- ---------    ---------    ----
+ !   47.1   0.1   8.5e-12        22       197 ..   2743392   2743558 ..   2743379   2743569 ..  10000000    0.94
+
+>> i1  seq;
+    score  bias    Evalue   hmmfrom    hmm to     alifrom    ali to      envfrom    env to       sq len      acc
+   ------ ----- ---------   -------   -------    --------- ---------    --------- ---------    ---------    ----
+ !   46.3   2.5   1.5e-11         2       199 ..   7198821   7198997 ..   7198820   7199001 ..  10000000    0.95
+
+>> i1  seq;
+    score  bias    Evalue   hmmfrom    hmm to     alifrom    ali to      envfrom    env to       sq len      acc
+   ------ ----- ---------   -------   -------    --------- ---------    --------- ---------    ---------    ----
+ !   45.1   9.0   3.5e-11         2       197 ..   3378596   3378783 ..   3378595   3378796 ..  10000000    0.96
+
+>> i1  seq;
+    score  bias    Evalue   hmmfrom    hmm to     alifrom    ali to      envfrom    env to       sq len      acc
+   ------ ----- ---------   -------   -------    --------- ---------    --------- ---------    ---------    ----
+ !   42.3   1.0   2.6e-10         2       195 ..   4349224   4349422 ..   4349223   4349428 ..  10000000    0.95
+
+>> i1  seq;
+    score  bias    Evalue   hmmfrom    hmm to     alifrom    ali to      envfrom    env to       sq len      acc
+   ------ ----- ---------   -------   -------    --------- ---------    --------- ---------    ---------    ----
+ !   41.0   2.8   6.9e-10         2       199 ..   9365338   9365545 ..   9365337   9365548 ..  10000000    0.95
+
+>> i1  seq;
+    score  bias    Evalue   hmmfrom    hmm to     alifrom    ali to      envfrom    env to       sq len      acc
+   ------ ----- ---------   -------   -------    --------- ---------    --------- ---------    ---------    ----
+ !   40.4   0.4   1.1e-09         6       194 ..   9924368   9924532 ..   9924364   9924552 ..  10000000    0.94
+
+>> i1  seq;
+    score  bias    Evalue   hmmfrom    hmm to     alifrom    ali to      envfrom    env to       sq len      acc
+   ------ ----- ---------   -------   -------    --------- ---------    --------- ---------    ---------    ----
+ !   39.2   0.5   2.5e-09         4       193 ..   1698397   1698555 ..   1698394   1698563 ..  10000000    0.94
+
+
+
+Internal pipeline statistics summary:
+-------------------------------------
+Query model(s):                            1  (201 nodes)
+Target sequences:                          1  (20000000 residues searched)
+Residues passing SSV filter:          372271  (0.0186); expected (0.02)
+Residues passing bias filter:         372271  (0.0186); expected (0.02)
+Residues passing Vit filter:           26908  (0.00135); expected (0.003)
+Residues passing Fwd filter:            4985  (0.000249); expected (3e-05)
+Total number of hits:                      9  (8.34e-05)
+# CPU time: 0.68u 0.00s 00:00:00.68 Elapsed: 00:00:00.47
+# Mc/sec: 8418.62
+//
+[ok]
