@@ -2,13 +2,13 @@ import random
 import subprocess
 from Bio import SeqIO
 
-def number_split(len_s, N, len_subsequence):
+def number_split(len_s, N, len_subsequence, dist = 0):
     beginnings = [0] * N
     for i in range(N):
         begin_i = random.randint(0, len_s - len_subsequence - 1)
         j = 0
         while j < i:
-            if abs(beginnings[j] - begin_i) < len_subsequence:
+            if abs(beginnings[j] - begin_i) < (len_subsequence + dist):
                 j = 0
                 begin_i = random.randint(0, len_s - len_subsequence - 1)
             else:
@@ -51,6 +51,18 @@ def creating_fasta_new_nhmmer_set(name_seq, name_out_posision, N = 20, name_fast
     file = open(name_fasta_set,'w')
     file.write(string_set_of_subset)
     file.close()
+
+def creating_txt_res_nhmmer_set(name_seq, name_out_posision, min_len_subseq = 300, max_len_subseq = 500, N = 20, name_res_txt = 'example.fa'):
+    set_of_subseq = creating_new_set_from_out_nhmmer(name_seq, name_out_posision, N)
+    string_set_of_subset = ''
+    for i in range(len(set_of_subseq)):
+        if (len(set_of_subseq[i]) >= min_len_subseq) and (len(set_of_subseq[i]) <= max_len_subseq):
+            string_set_of_subset +=  str(set_of_subseq[i]) + '\n'
+        #string_set_of_subset += '>i' + str(i + 1) + ' Name;\n' +str(set_of_subseq[i]) + '\n'
+    file = open(name_res_txt,'w')
+    file.write(string_set_of_subset)
+    file.close()
+
 
 def txt_into_fasta(name_txt, name_fasta):
     f = open(name_txt, 'r')
