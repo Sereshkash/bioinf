@@ -31,6 +31,27 @@ def string_from_file(name_file):
     f1.close()
     return s
 
+def creating_test_fasta_set(name_S, N, len_subsequence, name_fasta_set = 'example.fa'):
+    S = string_from_file(name_S)
+    
+    f1 = open('num_repeat', 'r')
+    s = f1.readline()
+    beginnings_all = list(map(int, s.split()))
+    f1.close()
+    beginnings_1 = random.choices(beginnings_all, k = 7)
+    beginnings_2 = number_split(len(S), N - 7, len_subsequence)
+    beginnings = beginnings_1 + beginnings_2
+    set_of_subseq = [S[i:i + len_subsequence] for i in beginnings]
+
+    string_set_of_subset = ''
+    for i in range(len(set_of_subseq)):
+        string_set_of_subset +=  '>i' + str(i) + ' iteration;\n' +str(set_of_subseq[i]) + '\n'
+        #string_set_of_subset += '>i' + str(i + 1) + ' Name;\n' +str(set_of_subseq[i]) + '\n'
+    file = open(name_fasta_set,'w')
+    file.write(string_set_of_subset)
+    file.close()
+
+
 def creating_fasta_set(name_S, N, len_subsequence, name_fasta_set = 'example.fa'):
     S = string_from_file(name_S)
     set_of_subseq = string_split(S, N, len_subsequence)
@@ -56,8 +77,8 @@ def creating_txt_res_nhmmer_set(name_seq, name_out_posision, min_len_subseq = 30
     set_of_subseq = creating_new_set_from_out_nhmmer(name_seq, name_out_posision, N)
     string_set_of_subset = ''
     for i in range(len(set_of_subseq)):
-        if (len(set_of_subseq[i]) >= min_len_subseq) and (len(set_of_subseq[i]) <= max_len_subseq):
-            string_set_of_subset +=  str(set_of_subseq[i]) + '\n'
+        #if (len(set_of_subseq[i]) >= min_len_subseq) and (len(set_of_subseq[i]) <= max_len_subseq):
+        string_set_of_subset +=  str(set_of_subseq[i]) + '\n'
         #string_set_of_subset += '>i' + str(i + 1) + ' Name;\n' +str(set_of_subseq[i]) + '\n'
     file = open(name_res_txt,'w')
     file.write(string_set_of_subset)
@@ -93,20 +114,44 @@ def creating_new_set_from_out_nhmmer(name_seq, name_out_posision, N = 20):
     all_string = f.readlines()
     f.close()
     len_set = len(all_string)
-
-    if len_set > N:
-        new_set = [0] * N
-    else:
-        new_set = [0] * len_set
-
-    for i in range(min(len_set, N)):
+    # if len_set > N:
+    #     new_set = [0] * N
+    # else:
+    #     new_set = [0] * len_set
+    new_set = []
+    for i in range(len_set):
         string = all_string[i]
         index_sep = string.rfind(':') - 1
         prev_space = string.rfind(' ', 0, index_sep - 1)
         end = int(string[prev_space + 1:index_sep])
         prev_space2 = string.rfind(' ', 0, prev_space - 1)
         begin = int(string[prev_space2 + 1:prev_space])
-        new_set[i] = s[begin - 1:end]
+        if i > (N - 1):
+            break
+        #if abs(begin - 1 - end) < 500 and abs(begin - 1 - end) > 300:
+        new_set.append(s[begin - 1:end])
+        
+    # new_set = []
+    # i = 0
+    # if len_set == min(len_set, N):
+    #     string = all_string[i]
+    #     index_sep = string.rfind(':') - 1
+    #     prev_space = string.rfind(' ', 0, index_sep - 1)
+    #     end = int(string[prev_space + 1:index_sep])
+    #     prev_space2 = string.rfind(' ', 0, prev_space - 1)
+    #     begin = int(string[prev_space2 + 1:prev_space])
+    #     if (begin - 1 - end) < 500 and (begin - 1 - end) > 300:
+    #         new_set.append(s[begin - 1:end])
+        
+    # while i <= min(len_set, N):
+    #     string = all_string[i]
+    #     index_sep = string.rfind(':') - 1
+    #     prev_space = string.rfind(' ', 0, index_sep - 1)
+    #     end = int(string[prev_space + 1:index_sep])
+    #     prev_space2 = string.rfind(' ', 0, prev_space - 1)
+    #     begin = int(string[prev_space2 + 1:prev_space])
+        
+    #     new_set[i] = s[begin - 1:end]
     return new_set
 
 

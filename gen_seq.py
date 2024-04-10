@@ -36,6 +36,14 @@ def generation_seq(len_s, number_repeat, len_repeat, x = 0, alphabet = 'GTAC'):
     set_mutation_repeat = mutation(repeat_seq, number_repeat, x, alphabet)
 
     beginning_number_repeat = seq_split.number_split(len_s, number_repeat, len_repeat, len_repeat // 100)
+
+
+    f1 = open('num_repeat', 'w')
+    s = ' '.join(map(str, beginning_number_repeat))
+    f1.write(s)
+    f1.close()
+
+
     result_seq = ''.join(random.choice(alphabet) for _ in range(beginning_number_repeat[0])) + set_mutation_repeat[0]
    
     for i in range(1, number_repeat):
@@ -44,5 +52,5 @@ def generation_seq(len_s, number_repeat, len_repeat, x = 0, alphabet = 'GTAC'):
     result_seq +=  ''.join(random.choice(alphabet) for _ in range(len_s - len(set_mutation_repeat[-1]) - beginning_number_repeat[-1]))
     return result_seq
 
-
+print(len('TCAAGATGACTGGCGCTTGAAACCCCGCGGTAACTTATAGGTGAATTAGTAGACTTGCAGAACTGAACATATAAGGCGGCTGGCCTGTCCGATGACCTAGATGGAACGAGTCAAAACCAGATGGTCCCAGTCGGACGTCCTTTTAGGATCACGATGTTTATTGTTGGGATGCTCTCAACATTGGCGGCTGTATACTGGTCATGAAAGTAACTAACCGGCGAGGCGCAATGTTGCACCCTTGGCAGGGTCAAAAGACAAGCACCGTGGCTCTTGCGTAACTTGGAAATTTTGGGCAAATCGGCTGACCCAGCCTTGAGCTCACCCATTATCCACTCTTGATGTGCTTCCGACAGAGAAC'))
 #print(len(generation_seq(10**7, 10**3, 400, x = 1, alphabet = 'GTAC')))
