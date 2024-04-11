@@ -77,8 +77,8 @@ def creating_txt_res_nhmmer_set(name_seq, name_out_posision, min_len_subseq = 30
     set_of_subseq = creating_new_set_from_out_nhmmer(name_seq, name_out_posision, N)
     string_set_of_subset = ''
     for i in range(len(set_of_subseq)):
-        #if (len(set_of_subseq[i]) >= min_len_subseq) and (len(set_of_subseq[i]) <= max_len_subseq):
-        string_set_of_subset +=  str(set_of_subseq[i]) + '\n'
+        if (len(set_of_subseq[i]) >= min_len_subseq) and (len(set_of_subseq[i]) <= max_len_subseq):
+            string_set_of_subset +=  str(set_of_subseq[i]) + '\n'
         #string_set_of_subset += '>i' + str(i + 1) + ' Name;\n' +str(set_of_subseq[i]) + '\n'
     file = open(name_res_txt,'w')
     file.write(string_set_of_subset)
