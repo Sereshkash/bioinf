@@ -38,8 +38,13 @@ def creating_test_fasta_set(name_S, N, len_subsequence, name_fasta_set = 'exampl
     s = f1.readline()
     beginnings_all = list(map(int, s.split()))
     f1.close()
-    beginnings_1 = random.choices(beginnings_all, k = 7)
-    beginnings_2 = number_split(len(S), N - 7, len_subsequence)
+    beginnings_1 = random.choices(beginnings_all, k = 1)
+    beginnings_1 = beginnings_1 * 4
+    #beginnings_1[0] = beginnings_1[0] - 20
+    #beginnings_1[1] = beginnings_1[1] + 20
+    #beginnings_1 = [beginnings_1[i] + random.randint(-20, 20) for i in range(len(beginnings_1))]
+    beginnings_2 = number_split(len(S), N - 1, len_subsequence)
+    beginnings_2 = beginnings_2 * 4
     beginnings = beginnings_1 + beginnings_2
     set_of_subseq = [S[i:i + len_subsequence] for i in beginnings]
 
@@ -52,9 +57,9 @@ def creating_test_fasta_set(name_S, N, len_subsequence, name_fasta_set = 'exampl
     file.close()
 
 
-def creating_fasta_set(name_S, N, len_subsequence, name_fasta_set = 'example.fa'):
+def creating_fasta_set(name_S, N, len_subsequence, repeat_set = 1, name_fasta_set = 'example.fa'):
     S = string_from_file(name_S)
-    set_of_subseq = string_split(S, N, len_subsequence)
+    set_of_subseq = string_split(S, N, len_subsequence) * repeat_set
     string_set_of_subset = ''
     for i in range(len(set_of_subseq)):
         string_set_of_subset +=  '>i' + str(i) + ' iteration;\n' +str(set_of_subseq[i]) + '\n'
@@ -78,11 +83,23 @@ def creating_txt_res_nhmmer_set(name_seq, name_out_posision, min_len_subseq = 30
     string_set_of_subset = ''
     for i in range(len(set_of_subseq)):
         if (len(set_of_subseq[i]) >= min_len_subseq) and (len(set_of_subseq[i]) <= max_len_subseq):
-            string_set_of_subset +=  str(set_of_subseq[i]) + '\n'
+            string_set_of_subset +=  str(i) + ': ' + str(len(str(set_of_subseq[i]))) + '\n' + str(set_of_subseq[i]) + '\n'
         #string_set_of_subset += '>i' + str(i + 1) + ' Name;\n' +str(set_of_subseq[i]) + '\n'
     file = open(name_res_txt,'w')
     file.write(string_set_of_subset)
     file.close()
+
+# def creating_txt_res_nhmmer_set(name_seq, name_out_posision, min_len_subseq = 300, max_len_subseq = 500, N = 20, name_res_txt = 'example.fa'):
+#     set_of_subseq = creating_new_set_from_out_nhmmer(name_seq, name_out_posision, N)
+#     string_set_of_subset = ''
+#     for i in range(len(set_of_subseq)):
+#         if (len(set_of_subseq[i]) >= min_len_subseq) and (len(set_of_subseq[i]) <= max_len_subseq):
+#             string_set_of_subset +=  str(set_of_subseq[i]) + '\n'
+#         #string_set_of_subset += '>i' + str(i + 1) + ' Name;\n' +str(set_of_subseq[i]) + '\n'
+#     file = open(name_res_txt,'w')
+#     file.write(string_set_of_subset)
+#     file.close()
+
 
 
 def txt_into_fasta(name_txt, name_fasta):
