@@ -1,6 +1,7 @@
 import random
 import subprocess
 from Bio import SeqIO
+import os
 
 def number_split(len_s, N, len_subsequence, dist = 0):
     beginnings = [0] * N
@@ -78,16 +79,19 @@ def creating_fasta_new_nhmmer_set(name_seq, name_out_posision, N = 20, name_fast
     file.write(string_set_of_subset)
     file.close()
 
-def creating_txt_res_nhmmer_set(name_seq, name_out_posision, min_len_subseq = 300, max_len_subseq = 500, N = 20, name_res_txt = 'example.fa', left_step = 0, right_step = 0):
+def creating_txt_res_nhmmer_set(name_seq, name_out_posision, min_len_subseq = 300, max_len_subseq = 500, N = 10 ** 6, name_res_txt = 'example.fa', left_step = 0, right_step = 0):
     set_of_subseq = creating_new_set_from_out_nhmmer(name_seq, name_out_posision, N, left_step = left_step, right_step = right_step)
     string_set_of_subset = ''
+    number_subseq = 0
     for i in range(len(set_of_subseq)):
         if (len(set_of_subseq[i]) >= min_len_subseq) and (len(set_of_subseq[i]) <= max_len_subseq):
             string_set_of_subset +=  str(i) + ': ' + str(len(str(set_of_subseq[i]))) + '\n' + str(set_of_subseq[i]) + '\n'
-        #string_set_of_subset += '>i' + str(i + 1) + ' Name;\n' +str(set_of_subseq[i]) + '\n'
+            number_subseq += 1
+                #string_set_of_subset += '>i' + str(i + 1) + ' Name;\n' +str(set_of_subseq[i]) + '\n'
     file = open(name_res_txt,'w')
     file.write(string_set_of_subset)
     file.close()
+    return number_subseq
 
 # def creating_txt_res_nhmmer_set(name_seq, name_out_posision, min_len_subseq = 300, max_len_subseq = 500, N = 20, name_res_txt = 'example.fa'):
 #     set_of_subseq = creating_new_set_from_out_nhmmer(name_seq, name_out_posision, N)
@@ -143,7 +147,15 @@ def creating_new_set_from_out_nhmmer(name_seq, name_out_posision, N = 20, left_s
         string = all_string[i]
         index_sep = string.rfind(':') - 1
         prev_space = string.rfind(' ', 0, index_sep - 1)
-        end = int(string[prev_space + 1:index_sep])
+        try:
+            end = int(string[prev_space + 1:index_sep])
+        except:
+            print("string:", string)
+            print("index_sep:", index_sep)
+            print("prev_space:", prev_space)
+            print("name_file:",name_out_posision)
+            print("i:", i)
+            x1 = 1 / 0
         prev_space2 = string.rfind(' ', 0, prev_space - 1)
         begin = int(string[prev_space2 + 1:prev_space])
         if i > (N - 1):
@@ -235,23 +247,30 @@ def increase_len_subseq(s_name_txt, name_result_nhmmer_posision, name_result_nhm
 
 
 
-def increase_len_subseq_msa(s_name_txt, name_result_nhmmer_posision, name_result_nhmmer_posision_new = 'increase2/name_result_pos.fa',left_step = 0, right_step = 0, min_len_subseq = 20, max_len_subseq = 1000, N = 150):
-    name_folder = 'increase/'
-    name_set_subseq0 = name_folder + 'name_old_set_fasta.fa'
-    name_set_subseq0_msa = name_folder + 'name_old_set_fasta_msa.fa'
-    name_set_subseq0_msa_stockh = name_folder + 'name_old_set_fasta_msa.sto'
-    s_name_fasta = name_folder + 's_name.fa'
-    name_result_nhmmer_info = name_folder + 'name_result_nhmmer_info.fa'
-    name_position_subseq = name_folder + 'pos_sub2.fa'
-    name_position_subseq_msa = name_folder + 'pos_sub2_msa.fa'
+def increase_len_subseq_msa(s_name_txt, name_result_nhmmer_posision, 
+                            name_result_nhmmer_posision_new = 'increase2/name_result_pos.fa',
+                            name_folder = 'increase/', 
+                            left_step = 0, right_step = 0,
+                             min_len_subseq = 20, max_len_subseq = 1000, N = 150):
+                            
+    name_set_subseq0 = os.path.join(name_folder, 'name_old_set_fasta.fa')
+    name_set_subseq0_msa = os.path.join(name_folder, 'name_old_set_fasta_msa.fa')
+    name_set_subseq0_msa_stockh = os.path.join(name_folder, 'name_old_set_fasta_msa.sto')
+    s_name_fasta = os.path.join(name_folder,'s_name.fa')
+    name_result_nhmmer_info = os.path.join(name_folder, 'name_result_nhmmer_info.fa')
+    name_position_subseq = os.path.join(name_folder, 'pos_sub2.fa')
+    name_position_subseq_msa = os.path.join(name_folder, 'pos_sub2_msa.fa')
     #name_result_nhmmer_posision_new = name_folder + 'name_result_pos.fa'
     txt_into_fasta(s_name_txt, s_name_fasta)
     
     mean_len_subseq = 0
 
     creating_txt_res_nhmmer_set(s_name_txt, name_result_nhmmer_posision, min_len_subseq = 0, max_len_subseq = 1000, N =  10 ** 6, name_res_txt = name_folder + 'first_subseq.txt')
+    
+    #creating_fasta_new_nhmmer_set(s_name_txt, name_result_nhmmer_posision, N = N, left_step = 0, right_step = 0, name_fasta_set = name_position_subseq)
 
     set_subseq = creating_new_set_from_out_nhmmer(s_name_txt, name_result_nhmmer_posision, N = N, left_step = 0, right_step = 0, name_position_subseq = name_position_subseq)
+    
     #process = subprocess.run(['muscle', '-in', name_position_subseq, '-out', name_position_subseq_msa], capture_output=True, text = True)
     #print(mean_len_subseq, len(set_subseq), min_x, max_x)
     muscle_msa(name_position_subseq,name_position_subseq_msa)
@@ -262,8 +281,6 @@ def increase_len_subseq_msa(s_name_txt, name_result_nhmmer_posision, name_result
     set_of_subseq = []
     i = 0
     while i != -1:
-
-        
         g = msa_pos.find(':', i + 1)
         begin, end = map(int, msa_pos[i + 1:g].split())
 
@@ -306,26 +323,30 @@ def increase_len_subseq_msa(s_name_txt, name_result_nhmmer_posision, name_result
 
     muscle_msa(name_set_subseq0, name_set_subseq0_msa)
     fasta_into_stockholm(name_set_subseq0_msa, name_set_subseq0_msa_stockh)
-    nhmmer_on_stock_msa(name_set_subseq0_msa_stockh, s_name_fasta, name_result_nhmmer_info, name_result_nhmmer_posision_new, 50)
+    nhmmer_on_stock_msa(name_set_subseq0_msa_stockh, s_name_fasta, name_result_nhmmer_info, name_result_nhmmer_posision_new, N)
 
-    name_res_txt = name_folder + 'second_subseq6.txt'
-    creating_txt_res_nhmmer_set(s_name_txt, name_result_nhmmer_posision_new, min_len_subseq = 0, max_len_subseq = 1000, N =  10 ** 6, name_res_txt = name_res_txt)
+    name_res_txt = os.path.join(name_folder, 'second_subseq.txt')
     
-    f = open(name_res_txt, 'r')
-    res = f.readlines()
-    f.close()
-    
-    return len(res) // 2
+    return creating_txt_res_nhmmer_set(s_name_txt, name_result_nhmmer_posision_new, min_len_subseq = 0, max_len_subseq = 1000, N =  10 ** 6, name_res_txt = name_res_txt)
+   
 
-def increase(s_name_txt, name_result_nhmmer_posision, name_result_nhmmer_posision_new = 'increase2/name_result_pos.fa', mean_predict = 400, N = 150):
-    name_folder = 'increase/'
-    creating_txt_res_nhmmer_set(s_name_txt, name_result_nhmmer_posision, min_len_subseq = 0, max_len_subseq = 1000, N =  10 ** 6, name_res_txt = name_folder + 'first_subseq.txt')
-    f = open(name_folder + 'first_subseq.txt', 'r')
+def increase(s_name_txt, name_result_nhmmer_posision, 
+               name_result_nhmmer_posision_new = 'increase2/name_result_pos.fa',
+               name_folder = 'increase/', 
+               best_name_res_txt = 'best_result_posision_increase.fa',
+               mean_predict = 400, N = 150, diff_variants = 5):
+    print(name_folder)
+    name_folder = os.path.join(name_folder, 'increase')
+    if not os.path.isdir(name_folder):
+        os.mkdir(name_folder)
+
+    creating_txt_res_nhmmer_set(s_name_txt, name_result_nhmmer_posision, min_len_subseq = 0, max_len_subseq = 1000, N =  10 ** 6, name_res_txt = os.path.join(name_folder, 'first_subseq.txt'))
+    f = open(os.path.join(name_folder, 'first_subseq.txt'), 'r')
     set_subseq = f.read()
     f.close()
-    min_x = 1000
+    min_x = 10000
     max_x = 0
-    for i in range(1, max(len(set_subseq), N), 2):
+    for i in range(1, min(len(set_subseq), N), 2):
         if min_x > len(set_subseq[i]):
             min_x = len(set_subseq[i])
         if max_x < len(set_subseq[i]):
@@ -334,16 +355,23 @@ def increase(s_name_txt, name_result_nhmmer_posision, name_result_nhmmer_posisio
     res_number_all = []
     max_res_number = 0
     max_res_number_index = 0
-    for i, left_diff in enumerate([j for j in range(0, diff + 1, diff // 10)]):
-        name_result_nhmmer_posision_new_i = name_folder + str(i) +'_name_result_pos.fa'
-        res_number = increase_len_subseq_msa(s_name_txt,  name_result_nhmmer_posision, name_result_nhmmer_posision_new = name_result_nhmmer_posision_new_i, left_step = left_diff, right_step = diff - left_diff, min_len_subseq = 20, max_len_subseq = 1000, N = 150)
+    for i, left_diff in enumerate([j for j in range(0, diff + 1, diff // diff_variants)]):
+        name_folder_increase_i = os.path.join(name_folder, 'increase_' + str(i))
+        if not os.path.isdir(name_folder_increase_i):
+            os.mkdir(name_folder_increase_i)
+        name_result_nhmmer_posision_new_i = os.path.join(name_folder, str(i) + '_result_pos.fa')
+        res_number = increase_len_subseq_msa(s_name_txt,  name_result_nhmmer_posision,
+                                            name_result_nhmmer_posision_new = name_result_nhmmer_posision_new_i,
+                                            left_step = left_diff, right_step = diff - left_diff,
+                                            name_folder = name_folder_increase_i,
+                                            min_len_subseq = 20, max_len_subseq = 1000, N = N)
         res_number_all.append(res_number)
         if res_number >= max_res_number:
             max_res_number_index = i
             max_res_number = res_number
     print(res_number_all)
     
-    f = open(name_folder + str(max_res_number_index) +'_name_result_pos.fa', 'r')
+    f = open(os.path.join(name_folder, str(max_res_number_index) + '_result_pos.fa'), 'r')
     res = f.read()
     f.close()
     
@@ -351,7 +379,8 @@ def increase(s_name_txt, name_result_nhmmer_posision, name_result_nhmmer_posisio
     f.write(res)
     f.close()
 
-    creating_txt_res_nhmmer_set(s_name_txt, name_result_nhmmer_posision_new, min_len_subseq = 0, max_len_subseq = 1000, N =  10 ** 6, name_res_txt = name_folder + 'sw_subseq.txt')
+    number_of_subseq = creating_txt_res_nhmmer_set(s_name_txt, name_result_nhmmer_posision_new, min_len_subseq = 0, max_len_subseq = 1000, N =  10 ** 6, name_res_txt = best_name_res_txt)
+    return number_of_subseq
     #creating_new_set_from_out_nhmmer(s_name_txt, name_result_nhmmer_posision, N = 10 ** 6, left_step = left_step, right_step = right_step)
     
     #process = subprocess.run(['muscle', '-in', name_old_set_fasta, '-out', name_old_set_fasta_msa], capture_output=True, text = True)
