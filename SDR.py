@@ -5,7 +5,7 @@ import gen_seq
 import os
 import time
 import shutil
-
+import argparse
 
 def mult_iteration(j, N = 3, repeat_set = 6, len_subseq = 410, E_val = 1, number_set_of_subseq = 8,
                     s_name_txt_orig = 'iter4/example_new.txt', name_folder_root = 'SDR1/1/', N1 = 40, number_of_iteration = 10):
@@ -65,7 +65,8 @@ def mult_iteration(j, N = 3, repeat_set = 6, len_subseq = 410, E_val = 1, number
         if number_of_subseq_i <= N:
             break
 
-    #print(number_of_subseq_i)
+    if number_of_subseq_i > 300:
+        print(number_of_subseq_i)
 
     number_of_subseq_i_best = sq.creating_txt_res_nhmmer_set(s_name_txt, best_nhmm_posision, min_len_subseq = 0, max_len_subseq = 1000, N =  10 ** 6, name_res_txt = name_set_res)
 
@@ -89,7 +90,7 @@ def mult_iteration(j, N = 3, repeat_set = 6, len_subseq = 410, E_val = 1, number
     return name_folder
 
 
-def increasing_best(name_folder, mean_predict_len_subseq = 400):
+def increasing_best(name_folder, mean_predict_len_subseq = 400, working = True):
     s_local_txt = 's.txt'
     s_name_txt = os.path.join(name_folder, s_local_txt)
     if not os.path.exists(s_name_txt):
@@ -121,7 +122,7 @@ def increasing_best(name_folder, mean_predict_len_subseq = 400):
 
     number_of_subseq =  sq.creating_txt_res_nhmmer_set(s_name_txt, best_nhmm_posision, min_len_subseq = 0, 
                                                        max_len_subseq = 1000, N =  10 ** 6, name_res_txt = 'best_without_increase_result.txt')
-    if number_of_subseq > 20:
+    if number_of_subseq >= 10 and working:
         number_of_subseq = sq.increase(s_name_txt, best_nhmm_posision, 
                 name_result_nhmmer_posision_new=best_nhmm_posision_new,
                 name_folder=name_folder,
@@ -131,15 +132,31 @@ def increasing_best(name_folder, mean_predict_len_subseq = 400):
     return number_of_subseq
 
 if __name__ == '__main__':
-    s_name_txt_orig = 'example_1_2.txt'
-    mean_predict_len_subseq = 400
-    number_set_of_subseq = 50
-    N = 3
-    repeat_set = 6
-    len_subseq = 410
-    E_val = 20
-    N1 = 40
-    number_of_iteration = 10
+
+    # s_name_txt_orig = 'example_1_6.txt'
+    # mean_predict_len_subseq = 400
+    # number_set_of_subseq = 15
+    # N = 3
+    # repeat_set = 6
+    # len_subseq = 410
+    # E_val = 20
+    # N1 = 40
+    # number_of_iteration = 10
+
+    parser = argparse.ArgumentParser(description="Ping script")
+
+    parser.add_argument('-f', '--filename', dest='s_name', required=True, help='Name of file with sequence')
+    parser.add_argument('--ml', '--mean_len', dest='mean_len', default=400, type=int, required=False, help='Mean len of repeat sequence')
+    parser.add_argument('--ns', '--number_subseq', dest='number_subseq', default=100, type=int, required=False, help='Number of different search')
+    parser.add_argument('-N', '--number_diff_subseq', dest='N', default=3, type=int, required=False, help='Number of different initial subsequences')
+    parser.add_argument('--rp', '--repeat_subseq', dest='repeat_subseq', default=6, type=int, required=False, help='Number of repeat initial subsequences')
+    parser.add_argument('-l', '--len_subseq', dest='len_subseq', default=410, type=int, required=False,  help='Len initial subsequence')
+    parser.add_argument('-E', '--E_value', dest='E', default=20, type=int, required=False,  help='E-value')
+    parser.add_argument('--ni', '--number_iteration', dest='number_iteration', default=10, type=int, required=False,  help='Number of iteration in one proccess')
+    parser.add_argument('--N_search', dest='N_search', default=40, type=int, required=False,  help='Number of selected sequences')
+    parser.add_argument('--increase_len', dest='increase_len', default=True, type=bool, required=False,  help='Increase len, bool')
+    
+    args = parser.parse_args()
 
     time_start = time.time()
 
@@ -156,17 +173,17 @@ if __name__ == '__main__':
     print('S')
 
     def iteration_run(x):
-        return mult_iteration(x, N = 3, repeat_set = 6, len_subseq = 410,
-                               E_val = 20, number_set_of_subseq = number_set_of_subseq, 
-                               s_name_txt_orig = s_name_txt_orig, 
-                               name_folder_root = name_folder, N1 = 40, number_of_iteration = 10)
+        return mult_iteration(x, N = args.N, repeat_set = args.repeat_subseq, len_subseq = args.len_subseq,
+                               E_val = args.E, number_set_of_subseq = args.number_subseq, 
+                               s_name_txt_orig = args.s_name, 
+                               name_folder_root = name_folder, N1 = args.N_search, number_of_iteration = args.number_iteration)
     
     
     def iteration_run_increase(x):
-        return increasing_best(x, mean_predict_len_subseq = mean_predict_len_subseq)
+        return increasing_best(x, mean_predict_len_subseq = args.mean_len, working = args.increase_len)
     
     with Pool(processes=cpu_count()) as pool:
-        values = [j + 1 for j in range(number_set_of_subseq)]
+        values = [j + 1 for j in range(args.number_subseq)]
         results_folder = pool.map(iteration_run, values)
     time_finish_search = time.time()
     
@@ -181,7 +198,7 @@ if __name__ == '__main__':
         results_N = pool2.map(iteration_run_increase, results_folder_diff)
 
     max_N = max(results_N)
-    max_N_folder = results_folder[results_N.index(max_N)]
+    max_N_folder = results_folder_diff[results_N.index(max_N)]
 
     print('N:', *results_N)
 
