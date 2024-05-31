@@ -52,9 +52,11 @@ def generation_seq(len_s, number_repeat, len_repeat, x = 0, alphabet = 'GTAC'):
     result_seq +=  ''.join(random.choice(alphabet) for _ in range(len_s - len(set_mutation_repeat[-1]) - beginning_number_repeat[-1]))
     return result_seq
 
-gen_seq_S = generation_seq(10**7, 10**3, 400, x = 1.2, alphabet = 'GTAC')
-s_name_txt = 'example_1_2.txt'
+gen_seq_S = generation_seq(10**7, 10**3, 400, x = 0.5, alphabet = 'GTAC')
+s_name_txt = 'example_0_5.txt'
 f = open(s_name_txt, 'w')
 f.write(gen_seq_S)
 f.close()
+s_name_fasta = 'example_0_5.fa'
+seq_split.txt_into_fasta(s_name_txt, s_name_fasta)
 #print(len(generation_seq(10**7, 10**3, 400, x = 1, alphabet = 'GTAC')))

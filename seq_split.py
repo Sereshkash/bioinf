@@ -73,21 +73,22 @@ def creating_fasta_new_nhmmer_set(name_seq, name_out_posision, N = 20, name_fast
     set_of_subseq = creating_new_set_from_out_nhmmer(name_seq, name_out_posision, N, left_step = left_step, right_step = right_step)
     string_set_of_subset = ''
     for i in range(len(set_of_subseq)):
-        string_set_of_subset +=  '>i' + str(i) + ' iteration;\n' +str(set_of_subseq[i]) + '\n'
-        #string_set_of_subset += '>i' + str(i + 1) + ' Name;\n' +str(set_of_subseq[i]) + '\n'
+        string_set_of_subset += '>i' + str(i) + ' iteration;\n' + str(set_of_subseq[i]) + '\n'
     file = open(name_fasta_set,'w')
     file.write(string_set_of_subset)
     file.close()
 
 def creating_txt_res_nhmmer_set(name_seq, name_out_posision, min_len_subseq = 300, max_len_subseq = 500, N = 10 ** 6, name_res_txt = 'example.fa', left_step = 0, right_step = 0):
+    #получение набора подпоследовательностей
     set_of_subseq = creating_new_set_from_out_nhmmer(name_seq, name_out_posision, N, left_step = left_step, right_step = right_step)
+    
+    #запись в файл набора подпоследовательностей
     string_set_of_subset = ''
     number_subseq = 0
     for i in range(len(set_of_subseq)):
         if (len(set_of_subseq[i]) >= min_len_subseq) and (len(set_of_subseq[i]) <= max_len_subseq):
             string_set_of_subset +=  str(i) + ': ' + str(len(str(set_of_subseq[i]))) + '\n' + str(set_of_subseq[i]) + '\n'
             number_subseq += 1
-                #string_set_of_subset += '>i' + str(i + 1) + ' Name;\n' +str(set_of_subseq[i]) + '\n'
     file = open(name_res_txt,'w')
     file.write(string_set_of_subset)
     file.close()
@@ -112,38 +113,42 @@ def txt_into_fasta(name_txt, name_fasta):
     f.close()
 
     f1 = open(name_fasta, 'w')
+    print(string[:20])
+    print(name_fasta)
     f1.write(string)
     f1.close()
 
-def muscle_msa(name_in, name_out = 'seqs1.afa'):
+def muscle_msa(name_in, name_out = 'msa.afa'):
     process = subprocess.run(['muscle', '-in', name_in, '-out', name_out], capture_output=True, text = True)
     return process
 
-def fasta_into_stockholm(name_in = 'example.fa', name_out = 'fasta_file6.sto'):
+def fasta_into_stockholm(name_in = 'example.fa', name_out = 'example.sto'):
     records = SeqIO.parse(name_in, 'fasta')
     count = SeqIO.write(records, name_out, 'stockholm')
 
-def nhmmer_on_stock_msa(name_set_msa = '1mult_sto.sto', name_seq = '1ex.fa', name_out_inf = 'result_hmm.fa', name_out_posision = 'www.fa', p_val = 0.001):
-    command = 'nhmmer -o ' + name_out_inf + ' --aliscoresout ' + name_out_posision + ' --noali --notextw --singlemx --dna --incE ' + str(p_val) + ' ' + name_set_msa + ' ' + name_seq
+def nhmmer_on_stock_msa(name_set_msa = 'msa_sto.sto', name_seq = 'seq.fa', name_out_inf = 'result_hmm_info.fa', name_out_posision = 'posision.fa', E_val = 0.001):
+    command = 'nhmmer -o ' + name_out_inf + ' --aliscoresout ' + name_out_posision + ' --noali --notextw --singlemx --dna --incE ' + str(E_val) + ' ' + name_set_msa + ' ' + name_seq
     process = subprocess.run(command, shell = True, capture_output = True, text = True)
     return name_out_posision
 
-def creating_new_set_from_out_nhmmer(name_seq, name_out_posision, N = 20, left_step = 0, right_step = 0, name_position_subseq = 'position_subseq1.fa'):
+def creating_new_set_from_out_nhmmer(name_seq, name_out_posision, N = 20, left_step = 0, right_step = 0, name_position_subseq = 'position_subseq.fa'):
+    #получение исходной последовательности из предоставленного файла
     s = string_from_file(name_seq)
 
+    #чтение файла с найденными позициями подпоследовательностей
     f = open(name_out_posision, 'r')
     all_string = f.readlines()
     f.close()
     len_set = len(all_string)
-    # if len_set > N:
-    #     new_set = [0] * N
-    # else:
-    #     new_set = [0] * len_set
+
     new_set = []
+
+    #создание файла с итоговыми подпоследовательностями
     f = open(name_position_subseq, 'w')
     f.write('')
     f.close()
     for i in range(len_set):
+        #получение номера начального и конечного символа подпоследовательности
         string = all_string[i]
         index_sep = string.rfind(':') - 1
         prev_space = string.rfind(' ', 0, index_sep - 1)
@@ -158,9 +163,10 @@ def creating_new_set_from_out_nhmmer(name_seq, name_out_posision, N = 20, left_s
             x1 = 1 / 0
         prev_space2 = string.rfind(' ', 0, prev_space - 1)
         begin = int(string[prev_space2 + 1:prev_space])
+
+        #изменение номера начального и конечного символа с учётом входящего смещения 
         if i > (N - 1):
             break
-        #if abs(begin - 1 - end) < 500 and abs(begin - 1 - end) > 300:
         if (begin - left_step) <= 0:
             begin = 0
         else:
@@ -170,34 +176,13 @@ def creating_new_set_from_out_nhmmer(name_seq, name_out_posision, N = 20, left_s
             end = len(s) - 1
         else:
             end = end + right_step
-        #print(i, begin, end, 'diff',end - begin)
+
+        #добавление найденной подпоследовательности в получаемый набор new_set
         if end - begin > 0:
             f = open(name_position_subseq, 'a')
             f.write('>' + str(begin) + ' ' + str(end) + ':\n' + str(s[begin:end]) + '\n')
             f.close()
             new_set.append(s[begin:end])
-        
-    # new_set = []
-    # i = 0
-    # if len_set == min(len_set, N):
-    #     string = all_string[i]
-    #     index_sep = string.rfind(':') - 1
-    #     prev_space = string.rfind(' ', 0, index_sep - 1)
-    #     end = int(string[prev_space + 1:index_sep])
-    #     prev_space2 = string.rfind(' ', 0, prev_space - 1)
-    #     begin = int(string[prev_space2 + 1:prev_space])
-    #     if (begin - 1 - end) < 500 and (begin - 1 - end) > 300:
-    #         new_set.append(s[begin - 1:end])
-        
-    # while i <= min(len_set, N):
-    #     string = all_string[i]
-    #     index_sep = string.rfind(':') - 1
-    #     prev_space = string.rfind(' ', 0, index_sep - 1)
-    #     end = int(string[prev_space + 1:index_sep])
-    #     prev_space2 = string.rfind(' ', 0, prev_space - 1)
-    #     begin = int(string[prev_space2 + 1:prev_space])
-        
-    #     new_set[i] = s[begin - 1:end]
     return new_set
 
 def increase_len_subseq(s_name_txt, name_result_nhmmer_posision, name_result_nhmmer_posision_new = 'increase2/name_result_pos.fa',left_step = 0, right_step = 0, min_len_subseq = 20, max_len_subseq = 1000, N = 150):
@@ -267,8 +252,6 @@ def increase_len_subseq_msa(s_name_txt, name_result_nhmmer_posision,
 
     creating_txt_res_nhmmer_set(s_name_txt, name_result_nhmmer_posision, min_len_subseq = 0, max_len_subseq = 1000, N =  10 ** 6, name_res_txt = name_folder + 'first_subseq.txt')
     
-    #creating_fasta_new_nhmmer_set(s_name_txt, name_result_nhmmer_posision, N = N, left_step = 0, right_step = 0, name_fasta_set = name_position_subseq)
-
     set_subseq = creating_new_set_from_out_nhmmer(s_name_txt, name_result_nhmmer_posision, N = N, left_step = 0, right_step = 0, name_position_subseq = name_position_subseq)
     
     #process = subprocess.run(['muscle', '-in', name_position_subseq, '-out', name_position_subseq_msa], capture_output=True, text = True)
@@ -335,7 +318,7 @@ def increase(s_name_txt, name_result_nhmmer_posision,
                name_folder = 'increase/', 
                best_name_res_txt = 'best_result_posision_increase.fa',
                mean_predict = 400, N = 150, diff_variants = 5):
-    print(name_folder)
+   
     name_folder = os.path.join(name_folder, 'increase')
     if not os.path.isdir(name_folder):
         os.mkdir(name_folder)

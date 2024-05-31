@@ -65,10 +65,10 @@ def mult_iteration(j, N = 3, repeat_set = 6, len_subseq = 410, E_val = 1, number
         if number_of_subseq_i <= N:
             break
 
-    if number_of_subseq_i > 300:
+    if number_of_subseq_i > 100:
         print(number_of_subseq_i)
 
-    number_of_subseq_i_best = sq.creating_txt_res_nhmmer_set(s_name_txt, best_nhmm_posision, min_len_subseq = 0, max_len_subseq = 1000, N =  10 ** 6, name_res_txt = name_set_res)
+    number_of_subseq_i_best = sq.creating_txt_res_nhmmer_set(s_name_txt, best_nhmm_posision, min_len_subseq = 0, max_len_subseq = 1000, N =  10 ** 6, name_res_txt = best_res_txt)
 
     if number_of_subseq_i > number_of_subseq_i_best:
         f = open(name_set_res, 'r')
@@ -121,8 +121,8 @@ def increasing_best(name_folder, mean_predict_len_subseq = 400, working = True):
         f.close()
 
     number_of_subseq =  sq.creating_txt_res_nhmmer_set(s_name_txt, best_nhmm_posision, min_len_subseq = 0, 
-                                                       max_len_subseq = 1000, N =  10 ** 6, name_res_txt = 'best_without_increase_result.txt')
-    if number_of_subseq >= 10 and working:
+                                                       max_len_subseq = 1000, N =  10 ** 6, name_res_txt = os.path.join(name_folder, 'best_without_increase_result.txt'))
+    if number_of_subseq >= 6 and working:
         number_of_subseq = sq.increase(s_name_txt, best_nhmm_posision, 
                 name_result_nhmmer_posision_new=best_nhmm_posision_new,
                 name_folder=name_folder,
@@ -132,17 +132,6 @@ def increasing_best(name_folder, mean_predict_len_subseq = 400, working = True):
     return number_of_subseq
 
 if __name__ == '__main__':
-
-    # s_name_txt_orig = 'example_1_6.txt'
-    # mean_predict_len_subseq = 400
-    # number_set_of_subseq = 15
-    # N = 3
-    # repeat_set = 6
-    # len_subseq = 410
-    # E_val = 20
-    # N1 = 40
-    # number_of_iteration = 10
-
     parser = argparse.ArgumentParser(description="Ping script")
 
     parser.add_argument('-f', '--filename', dest='s_name', required=True, help='Name of file with sequence')
@@ -151,16 +140,18 @@ if __name__ == '__main__':
     parser.add_argument('-N', '--number_diff_subseq', dest='N', default=3, type=int, required=False, help='Number of different initial subsequences')
     parser.add_argument('--rp', '--repeat_subseq', dest='repeat_subseq', default=6, type=int, required=False, help='Number of repeat initial subsequences')
     parser.add_argument('-l', '--len_subseq', dest='len_subseq', default=410, type=int, required=False,  help='Len initial subsequence')
-    parser.add_argument('-E', '--E_value', dest='E', default=20, type=int, required=False,  help='E-value')
+    parser.add_argument('-E', '--E_value', dest='E', default=0.01, type=float, required=False,  help='E-value')
     parser.add_argument('--ni', '--number_iteration', dest='number_iteration', default=10, type=int, required=False,  help='Number of iteration in one proccess')
     parser.add_argument('--N_search', dest='N_search', default=40, type=int, required=False,  help='Number of selected sequences')
     parser.add_argument('--increase_len', dest='increase_len', default=True, type=bool, required=False,  help='Increase len, bool')
+    parser.add_argument('--nf', '--name_folder', dest='name_folder_root', default='SDR', type=str, required=False,  help='Name folder for files')
+    parser.add_argument('-o', '--name_file_out', dest='name_file_out', default='-', type=str, required=False,  help='Name file for result')
     
     args = parser.parse_args()
 
     time_start = time.time()
 
-    name_folder_root = 'SDR1'
+    name_folder_root = args.name_folder_root
 
     if not os.path.isdir(name_folder_root):
         os.mkdir(name_folder_root)
@@ -192,7 +183,7 @@ if __name__ == '__main__':
     for res_folder in results_folder_set:
         results_folder_diff.append(res_folder)
 
-    print(round((time_finish_search - time_start) / 60, 2))
+    #print(round((time_finish_search - time_start) / 60, 2))
 
     with Pool(processes=cpu_count()) as pool2:
         results_N = pool2.map(iteration_run_increase, results_folder_diff)
@@ -200,12 +191,17 @@ if __name__ == '__main__':
     max_N = max(results_N)
     max_N_folder = results_folder_diff[results_N.index(max_N)]
 
-    print('N:', *results_N)
-
     time_finish = time.time()
     time_res_seach = time_finish_search - time_start
     time_res_increase = time_finish - time_finish_search
+
+    print('N:', *results_N)
     s = 'N = {}, max_N_folder = {}, time_search = {}, time_increase = {}'.format(max_N, max_N_folder, round(time_res_seach / 60, 2),  round(time_res_increase / 60, 2))
-    print(s)
+    if args.name_file_out == '-':
+        print(s)
+    else:
+        f = open(args.name_file_out)
+        f.write(s)
+        f.close()
 
 
