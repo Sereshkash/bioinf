@@ -4,21 +4,31 @@ from Bio import SeqIO
 import os
 
 def number_split(len_s, N, len_subsequence, dist = 0):
+    #dist - минимальное расстояние между подпоследовательностями
+
+    #создание массива для записи позиций начал
     beginnings = [0] * N
+
     for i in range(N):
+        #генерация случайного числа таким образом, чтобы подпоследовательность влезла в последовательность
         begin_i = random.randint(0, len_s - len_subsequence - 1)
         j = 0
         while j < i:
+            #добавляем подпоследовательнсть в случае, когда она не пересекается ни с одной из предыдущих
             if abs(beginnings[j] - begin_i) < (len_subsequence + dist):
                 j = 0
                 begin_i = random.randint(0, len_s - len_subsequence - 1)
             else:
                 j += 1
         beginnings[i] = begin_i
+    #возвращаем массив начальных позиций
     return sorted(beginnings)
 
 def string_split(S, N, len_subsequence):
+    #получение номеров начал подпоследовательностей
     beginnings = number_split(len(S), N, len_subsequence)
+
+    #создание массива подпоследовательностей
     set_of_subseq = [S[i:i + len_subsequence] for i in beginnings]
     return set_of_subseq
 
@@ -59,18 +69,29 @@ def creating_test_fasta_set(name_S, N, len_subsequence, name_fasta_set = 'exampl
 
 
 def creating_fasta_set(name_S, N, len_subsequence, repeat_set = 1, name_fasta_set = 'example.fa'):
+    #получение исходной последовательности
     S = string_from_file(name_S)
+
+    #получение начального набора
     set_of_subseq = string_split(S, N, len_subsequence) * repeat_set
+
+    #запись в файл в формате FASTA
     string_set_of_subset = ''
     for i in range(len(set_of_subseq)):
         string_set_of_subset +=  '>i' + str(i) + ' iteration;\n' +str(set_of_subseq[i]) + '\n'
-        #string_set_of_subset += '>i' + str(i + 1) + ' Name;\n' +str(set_of_subseq[i]) + '\n'
     file = open(name_fasta_set,'w')
     file.write(string_set_of_subset)
     file.close()
 
 def creating_fasta_new_nhmmer_set(name_seq, name_out_posision, N = 20, name_fasta_set = 'example.fa', left_step = 0, right_step = 0):
+    #функция создание нового набора подпоследовательностей в формате FASTA
+    #создается по файлу, созданному nHMMER
+    #left_step и right_step - возможные расширения подпоследовательностей
+
+    #создание массива подпоследовательностей
     set_of_subseq = creating_new_set_from_out_nhmmer(name_seq, name_out_posision, N, left_step = left_step, right_step = right_step)
+    
+    #запись в файл
     string_set_of_subset = ''
     for i in range(len(set_of_subseq)):
         string_set_of_subset += '>i' + str(i) + ' iteration;\n' + str(set_of_subseq[i]) + '\n'
@@ -113,7 +134,7 @@ def txt_into_fasta(name_txt, name_fasta):
     f.close()
 
     f1 = open(name_fasta, 'w')
-    print(string[:20])
+    #print(string[:20])
     print(name_fasta)
     f1.write(string)
     f1.close()
@@ -237,7 +258,7 @@ def increase_len_subseq_msa(s_name_txt, name_result_nhmmer_posision,
                             name_folder = 'increase/', 
                             left_step = 0, right_step = 0,
                              min_len_subseq = 20, max_len_subseq = 1000, N = 150):
-                            
+    #создание локальных файлов                        
     name_set_subseq0 = os.path.join(name_folder, 'name_old_set_fasta.fa')
     name_set_subseq0_msa = os.path.join(name_folder, 'name_old_set_fasta_msa.fa')
     name_set_subseq0_msa_stockh = os.path.join(name_folder, 'name_old_set_fasta_msa.sto')
@@ -245,22 +266,20 @@ def increase_len_subseq_msa(s_name_txt, name_result_nhmmer_posision,
     name_result_nhmmer_info = os.path.join(name_folder, 'name_result_nhmmer_info.fa')
     name_position_subseq = os.path.join(name_folder, 'pos_sub2.fa')
     name_position_subseq_msa = os.path.join(name_folder, 'pos_sub2_msa.fa')
-    #name_result_nhmmer_posision_new = name_folder + 'name_result_pos.fa'
-    txt_into_fasta(s_name_txt, s_name_fasta)
-    
-    mean_len_subseq = 0
 
-    creating_txt_res_nhmmer_set(s_name_txt, name_result_nhmmer_posision, min_len_subseq = 0, max_len_subseq = 1000, N =  10 ** 6, name_res_txt = name_folder + 'first_subseq.txt')
-    
+    txt_into_fasta(s_name_txt, s_name_fasta)
+
     set_subseq = creating_new_set_from_out_nhmmer(s_name_txt, name_result_nhmmer_posision, N = N, left_step = 0, right_step = 0, name_position_subseq = name_position_subseq)
     
-    #process = subprocess.run(['muscle', '-in', name_position_subseq, '-out', name_position_subseq_msa], capture_output=True, text = True)
-    #print(mean_len_subseq, len(set_subseq), min_x, max_x)
-    muscle_msa(name_position_subseq,name_position_subseq_msa)
+    #создание выравнивания по позициям
+    muscle_msa(name_position_subseq, name_position_subseq_msa)
     f = open(name_position_subseq_msa, 'r')
     msa_pos = f.read()
     f.close()
+
     s = string_from_file(s_name_txt)
+
+    #создание нового массива подпоследовательностей с заданным расширением 
     set_of_subseq = []
     i = 0
     while i != -1:
@@ -285,6 +304,7 @@ def increase_len_subseq_msa(s_name_txt, name_result_nhmmer_posision,
             k = seq[j_right]
         end -= j_right + 1
         
+        #добавление смещения слева и справа
         if (begin - left_step) <= 0:
             begin = 0
         else:
@@ -296,20 +316,23 @@ def increase_len_subseq_msa(s_name_txt, name_result_nhmmer_posision,
             end = end + right_step
         set_of_subseq.append(s[begin:end])
 
+    #запись в новый набормв формате FASTA
     string_set_of_subset = ''
     for i in range(len(set_of_subseq)):
         string_set_of_subset +=  '>i' + str(i) + ' iteration;\n' + str(set_of_subseq[i]) + '\n'
-        #string_set_of_subset += '>i' + str(i + 1) + ' Name;\n' +str(set_of_subseq[i]) + '\n'
+
     file = open(name_set_subseq0,'w')
     file.write(string_set_of_subset)
     file.close()
 
+    #совершение одной итерации улучшения по новому набору
     muscle_msa(name_set_subseq0, name_set_subseq0_msa)
     fasta_into_stockholm(name_set_subseq0_msa, name_set_subseq0_msa_stockh)
     nhmmer_on_stock_msa(name_set_subseq0_msa_stockh, s_name_fasta, name_result_nhmmer_info, name_result_nhmmer_posision_new, N)
 
     name_res_txt = os.path.join(name_folder, 'second_subseq.txt')
     
+    #возращает количество найденных последовательностей
     return creating_txt_res_nhmmer_set(s_name_txt, name_result_nhmmer_posision_new, min_len_subseq = 0, max_len_subseq = 1000, N =  10 ** 6, name_res_txt = name_res_txt)
    
 
@@ -319,14 +342,23 @@ def increase(s_name_txt, name_result_nhmmer_posision,
                best_name_res_txt = 'best_result_posision_increase.fa',
                mean_predict = 400, N = 150, diff_variants = 5):
    
+    #производит процедуру увеличения длин по файлу с позициями
+    #mean_predict - средняя ожидаемая длина
+    #N - количество подпоследоватльностей для шага итерации
+    #diff_variants - количество вариантов движений окна с позициями
+
+    #создание папки для вспомогательных файлов
     name_folder = os.path.join(name_folder, 'increase')
     if not os.path.isdir(name_folder):
         os.mkdir(name_folder)
 
+    #получение файла с подпоследовательностями
     creating_txt_res_nhmmer_set(s_name_txt, name_result_nhmmer_posision, min_len_subseq = 0, max_len_subseq = 1000, N =  10 ** 6, name_res_txt = os.path.join(name_folder, 'first_subseq.txt'))
     f = open(os.path.join(name_folder, 'first_subseq.txt'), 'r')
     set_subseq = f.read()
     f.close()
+
+    #получение максимальной и минимальной длины подпоследовательности в наборе
     min_x = 10000
     max_x = 0
     for i in range(1, min(len(set_subseq), N), 2):
@@ -334,11 +366,18 @@ def increase(s_name_txt, name_result_nhmmer_posision,
             min_x = len(set_subseq[i])
         if max_x < len(set_subseq[i]):
             max_x = len(set_subseq[i])
+    
+    #получение общего количества символов для увеличения
     diff = mean_predict - max_x
+
+    #создание массива для результирюущих длин в зависимости от положения окна 
     res_number_all = []
     max_res_number = 0
     max_res_number_index = 0
+
+
     for i, left_diff in enumerate([j for j in range(0, diff + 1, diff // diff_variants)]):
+        #запуск увеличения по методу 2 для разных позиций окна
         name_folder_increase_i = os.path.join(name_folder, 'increase_' + str(i))
         if not os.path.isdir(name_folder_increase_i):
             os.mkdir(name_folder_increase_i)
@@ -349,24 +388,28 @@ def increase(s_name_txt, name_result_nhmmer_posision,
                                             name_folder = name_folder_increase_i,
                                             min_len_subseq = 20, max_len_subseq = 1000, N = N)
         res_number_all.append(res_number)
+        #поиск лучшего положения окна
         if res_number >= max_res_number:
             max_res_number_index = i
             max_res_number = res_number
-    print(res_number_all)
+    #print(res_number_all)
     
     f = open(os.path.join(name_folder, str(max_res_number_index) + '_result_pos.fa'), 'r')
     res = f.read()
     f.close()
     
+    #запись новых лучший позиций
     f = open(name_result_nhmmer_posision_new, 'w')
     f.write(res)
     f.close()
 
+    #запись нового лучшего набора подпоследовательностей
     number_of_subseq = creating_txt_res_nhmmer_set(s_name_txt, name_result_nhmmer_posision_new, min_len_subseq = 0, max_len_subseq = 1000, N =  10 ** 6, name_res_txt = best_name_res_txt)
-    return number_of_subseq
-    #creating_new_set_from_out_nhmmer(s_name_txt, name_result_nhmmer_posision, N = 10 ** 6, left_step = left_step, right_step = right_step)
     
-    #process = subprocess.run(['muscle', '-in', name_old_set_fasta, '-out', name_old_set_fasta_msa], capture_output=True, text = True)
+    #возвращает лучшее количество найденных повторов
+    return number_of_subseq
+   
+
 
 #creating_new_set_from_out_nhmmer('1ex.fa','www.fa')
 # set = string_split('CACAGGACTAGGATCGAAAGGCAG', 3, 4)
