@@ -6,7 +6,7 @@
 # query file:                      increase1/1example_subseq_msa2.sto
 # target sequence database:        increase1/example_new.fa
 # output directed to file:         increase1/name_result_nhmmer_info_0_new_f14.fa
-# alignment scores output:         increase1/name_result_nhmmer_posision_new2.fa
+# alignment scores output:         increase1/name_result_nhmmer_posision_new14.fa
 # show alignments in output:       no
 # max ASCII text line length:      unlimited
 # Use score matrix for 1-seq MSAs:  on
@@ -141,7 +141,7 @@ Residues passing bias filter:         423960  (0.0212); expected (0.02)
 Residues passing Vit filter:           66962  (0.00335); expected (0.003)
 Residues passing Fwd filter:           14077  (0.000704); expected (3e-05)
 Total number of hits:                     18  (0.000148)
-# CPU time: 0.63u 0.00s 00:00:00.63 Elapsed: 00:00:00.30
-# Mc/sec: 28039.28
+# CPU time: 0.64u 0.00s 00:00:00.64 Elapsed: 00:00:00.31
+# Mc/sec: 27794.25
 //
 [ok]

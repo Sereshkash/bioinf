@@ -82,6 +82,6 @@ Residues passing Vit filter:           49442  (0.00247); expected (0.003)
 Residues passing Fwd filter:            6630  (0.000331); expected (3e-05)
 Total number of hits:                      8  (8.47e-05)
 # CPU time: 0.63u 0.01s 00:00:00.64 Elapsed: 00:00:00.30
-# Mc/sec: 28002.67
+# Mc/sec: 28078.71
 //
 [ok]
